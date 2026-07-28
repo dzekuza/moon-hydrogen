@@ -29,7 +29,7 @@ export function CartLineItem({layout, line, childrenMap}) {
         {image && (
           <Image
             alt={title}
-            aspectRatio="1/1"
+            aspectRatio="3/4"
             data={image}
             height={100}
             loading="lazy"

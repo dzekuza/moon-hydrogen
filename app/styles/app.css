@@ -10,6 +10,15 @@
 
 img {
   border-radius: 4px;
+  /*
+   * Hydrogen's <Image> always renders explicit width/height HTML attributes
+   * (used as srcset sizing hints). Left alone, browsers treat that height
+   * attribute as a low-priority "height" declaration that overrides
+   * `aspect-ratio` and any `height: 100%`, producing squashed/stretched
+   * images. Forcing height back to auto lets aspect-ratio (or an explicit
+   * height set elsewhere) win instead.
+   */
+  height: auto;
 }
 
 /*
