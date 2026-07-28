@@ -1,22 +1,87 @@
 import {Suspense} from 'react';
-import {Await, NavLink} from 'react-router';
+import {Await, Link, NavLink} from 'react-router';
 
 /**
  * @param {FooterProps}
  */
 export function Footer({footer: footerPromise, header, publicStoreDomain}) {
+  const shopName = header?.shop?.name;
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
+          <footer className="mnp-footer">
+            <div className="mnp-fgrid">
+              <div>
+                <div className="mnp-mark">{shopName}</div>
+                <p className="mnp-fnote">
+                  Bamboo bedding, bath and loungewear.
+                </p>
+              </div>
+              <div>
+                <h4>Shop</h4>
+                <ul>
+                  <li>
+                    <Link to="/collections/all">Bedding</Link>
+                  </li>
+                  <li>
+                    <Link to="/collections/all">Bath</Link>
+                  </li>
+                  <li>
+                    <Link to="/collections/all">Loungewear</Link>
+                  </li>
+                  <li>
+                    <Link to="/collections/all">Baby &amp; kids</Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4>Help</h4>
+                {footer?.menu && header.shop.primaryDomain?.url ? (
+                  <FooterMenu
+                    menu={footer.menu}
+                    primaryDomainUrl={header.shop.primaryDomain.url}
+                    publicStoreDomain={publicStoreDomain}
+                  />
+                ) : (
+                  <FooterMenu
+                    menu={FALLBACK_FOOTER_MENU}
+                    primaryDomainUrl=""
+                    publicStoreDomain={publicStoreDomain}
+                  />
+                )}
+              </div>
+              <div>
+                <h4>More</h4>
+                <ul>
+                  <li>
+                    <Link to="/pages/about">Why bamboo</Link>
+                  </li>
+                  <li>
+                    <Link to="/blogs/journal">Journal</Link>
+                  </li>
+                  <li>
+                    <Link to="/pages/about">Stockists</Link>
+                  </li>
+                  <li>
+                    <a
+                      href="https://instagram.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Instagram
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="mnp-fbot">
+              <span>
+                © {new Date().getFullYear()} {shopName}
+              </span>
+              <span>Vilnius, Lithuania</span>
+            </div>
           </footer>
         )}
       </Await>
@@ -33,34 +98,32 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
  */
 function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
+    <ul>
+      {menu.items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
           item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
+          (primaryDomainUrl && item.url.includes(primaryDomainUrl))
             ? new URL(item.url).pathname
             : item.url;
         const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
+        return (
+          <li key={item.id}>
+            {isExternal ? (
+              <a href={url} rel="noopener noreferrer" target="_blank">
+                {item.title}
+              </a>
+            ) : (
+              <NavLink end prefetch="intent" to={url}>
+                {item.title}
+              </NavLink>
+            )}
+          </li>
         );
       })}
-    </nav>
+    </ul>
   );
 }
 
@@ -69,55 +132,42 @@ const FALLBACK_FOOTER_MENU = {
   items: [
     {
       id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
+      resourceId: null,
       tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
+      title: 'Shipping',
+      type: 'HTTP',
+      url: '/policies/shipping-policy',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
+      resourceId: null,
       tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
+      title: 'Returns',
+      type: 'HTTP',
       url: '/policies/refund-policy',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
+      resourceId: null,
       tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
+      title: 'Care guide',
+      type: 'HTTP',
+      url: '/pages/about',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
+      resourceId: null,
       tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
+      title: 'Contact',
+      type: 'HTTP',
+      url: '/pages/about',
       items: [],
     },
   ],
 };
-
-/**
- * @param {{
- *   isActive: boolean;
- *   isPending: boolean;
- * }}
- */
-function activeLinkStyle({isActive, isPending}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
-}
 
 /**
  * @typedef {Object} FooterProps

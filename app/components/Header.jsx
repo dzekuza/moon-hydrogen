@@ -1,26 +1,109 @@
-import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {Suspense, useEffect, useState} from 'react';
+import {Await, Link, NavLink, useAsyncValue} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+
+const PROMO_MESSAGES = [
+  'Free shipping on orders above 150 EUR',
+  'Buy two sets, the third is free',
+  '30-day returns, no questions asked',
+];
 
 /**
  * @param {HeaderProps}
  */
 export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {shop, menu} = header;
+  const hidden = useHideOnScroll();
+
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+    <header className={`mnp-header${hidden ? ' mnp-hide' : ''}`}>
+      <div className="mnp-bar">
+        <div className="mnp-bar-l">
+          <HeaderMenuMobileToggle />
+        </div>
+        <NavLink prefetch="intent" to="/" end className="mnp-mark">
+          {shop.name}
+        </NavLink>
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </div>
+      <nav className="mnp-navrow" role="navigation">
+        <Link to="/collections/all" className="mnp-nav-l">
+          New in: Bamboo sateen
+        </Link>
+        <PromoRotator />
+        <HeaderMenu
+          menu={menu}
+          viewport="desktop"
+          primaryDomainUrl={header.shop.primaryDomain.url}
+          publicStoreDomain={publicStoreDomain}
+        />
+      </nav>
     </header>
+  );
+}
+
+// Sticky nav: hides while scrolling down, reappears while scrolling up —
+// so it doesn't sit over the hero photography but is never more than a
+// scroll-tick away.
+function useHideOnScroll() {
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > 140 && y > last + 4) setHidden(true);
+        else if (y < last - 4 || y < 140) setHidden(false);
+        last = y;
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return hidden;
+}
+
+// Rotating message in the nav row: fades the current line out, then fades
+// the next one in — never cross-fades, since overlapping text just reads
+// as a blur.
+function PromoRotator() {
+  const [current, setCurrent] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return undefined;
+    }
+    const id = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setCurrent((i) => (i + 1) % PROMO_MESSAGES.length);
+        setVisible(true);
+      }, 300);
+    }, 3100);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <span className="mnp-promo">
+      {PROMO_MESSAGES.map((msg, i) => (
+        <b key={msg} className={i === current && visible ? 'on' : undefined}>
+          {msg}
+        </b>
+      ))}
+    </span>
   );
 }
 
@@ -38,7 +121,8 @@ export function HeaderMenu({
   viewport,
   publicStoreDomain,
 }) {
-  const className = `header-menu-${viewport}`;
+  const className =
+    viewport === 'desktop' ? 'mnp-nav-r' : 'header-menu-mobile';
   const {close} = useAside();
 
   return (
@@ -71,7 +155,7 @@ export function HeaderMenu({
             key={item.id}
             onClick={close}
             prefetch="intent"
-            style={activeLinkStyle}
+            style={viewport === 'mobile' ? activeLinkStyle : undefined}
             to={url}
           >
             {item.title}
@@ -87,9 +171,9 @@ export function HeaderMenu({
  */
 function HeaderCtas({isLoggedIn, cart}) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+    <nav className="mnp-bar-r" role="navigation">
+      <LangPicker />
+      <NavLink prefetch="intent" to="/account">
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
             {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
@@ -102,14 +186,30 @@ function HeaderCtas({isLoggedIn, cart}) {
   );
 }
 
+// Purely decorative, same as the static mockup: hover reveals LT/DE, but
+// the storefront isn't localized yet, so there's nothing to wire up.
+function LangPicker() {
+  return (
+    <div className="mnp-lang">
+      <b>EN</b>
+      <ul>
+        <li aria-current="true">EN</li>
+        <li>LT</li>
+        <li>DE</li>
+      </ul>
+    </div>
+  );
+}
+
 function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      className="mnp-toggle reset"
       onClick={() => open('mobile')}
+      aria-label="Open menu"
     >
-      <h3>☰</h3>
+      ☰
     </button>
   );
 }
@@ -200,7 +300,7 @@ const FALLBACK_HEADER_MENU = {
     },
     {
       id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
+      resourceId: null,
       tags: [],
       title: 'About',
       type: 'PAGE',
