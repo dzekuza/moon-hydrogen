@@ -14,6 +14,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import moonStyles from '~/styles/moon.css?url';
+import makeanapStyles from '~/styles/makeanap.css?url';
 import {PageLayout} from './components/PageLayout';
 
 /**
@@ -59,9 +60,10 @@ export function links() {
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Manrope:wght@300;400;500;600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&family=Fredoka:wght@400;500;600;700&family=Sansita:ital,wght@0,700;0,800;0,900;1,800&family=JetBrains+Mono:wght@400;500&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Manrope:wght@300;400;500;600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&family=Fredoka:wght@400;500;600;700&family=Sansita:ital,wght@0,700;0,800;0,900;1,800&family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500&display=swap',
     },
     {rel: 'stylesheet', href: moonStyles},
+    {rel: 'stylesheet', href: makeanapStyles},
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 }

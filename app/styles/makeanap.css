@@ -1,0 +1,159 @@
+/* MAKEANAP — landing page design, ported from the static makeanap.html mockup.
+   Scoped under .makeanap so it can't leak into (or be overridden by) the
+   site-wide header/footer/aside chrome, which keep using moon.css. */
+
+.makeanap{
+  --mnp-ground:#E9E9E7; --mnp-ink:#191917; --mnp-mut:#6E6E68; --mnp-line:#D2D2CE;
+  background:var(--mnp-ground);color:var(--mnp-ink);
+  font:400 13.5px/1.5 "Schibsted Grotesk", system-ui, sans-serif;
+  letter-spacing:-.01em;
+}
+.makeanap *{box-sizing:border-box}
+.makeanap img{display:block;width:100%;height:100%;object-fit:cover}
+.makeanap a{color:inherit;text-decoration:none}
+.makeanap button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ══ 1 · HERO ══════════════════════════════════════════════════════════ */
+.makeanap .mnp-hero{position:relative;display:flex;height:min(88vh,760px);min-height:460px;
+  overflow:hidden;background:#C9CBCA}
+.makeanap .mnp-hero-ph, .makeanap .mnp-hero-txt{position:relative;z-index:5}
+.makeanap .mnp-hero-ph{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 90px),transparent 100%);
+  mask-image:linear-gradient(to right,#000 calc(100% - 90px),transparent 100%)}
+.makeanap .mnp-hero-ph{flex:0 0 68%;min-width:0}
+.makeanap .mnp-hero-ph img{position:absolute;inset:0;opacity:0;z-index:0;transition:opacity 1.1s ease}
+.makeanap .mnp-hero-ph img.on{opacity:1;z-index:2}
+.makeanap .mnp-hero-txt{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;
+  padding:0 clamp(28px,3.4vw,56px)}
+.makeanap .mnp-hero-txt > *{position:relative;z-index:2}
+.makeanap .mnp-seam{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:100% 100%;
+  background-repeat:no-repeat;background-color:#C9CBCA;opacity:0;transition:opacity 1.1s ease}
+.makeanap .mnp-seam.on{opacity:1;z-index:1}
+.makeanap .mnp-eye{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mnp-ink);opacity:.55;margin-bottom:26px}
+.makeanap .mnp-word{
+  display:block;text-align:left;font-size:clamp(38px,4.6vw,68px);line-height:1.03;
+  font-weight:400;letter-spacing:-.035em;color:var(--mnp-ink);opacity:.34;
+  padding:2px 0;transition:opacity .4s ease;position:relative;width:max-content;
+}
+.makeanap .mnp-word[aria-pressed="true"]{opacity:1}
+.makeanap .mnp-ln{position:absolute;left:0;bottom:6px;height:1px;background:var(--mnp-ink);width:0}
+.makeanap .mnp-word[aria-pressed="true"] .mnp-ln{animation:mnp-bar 4.2s linear forwards}
+.makeanap.mnp-held .mnp-word .mnp-ln{animation:none;width:100%}
+@keyframes mnp-bar{from{width:0}to{width:100%}}
+.makeanap .mnp-hero-meta{margin-top:34px;font-size:14px;color:var(--mnp-ink);opacity:.62}
+.makeanap .mnp-hero-link{position:absolute;inset:0;z-index:1}
+
+/* ══ 2 · RAIL ══════════════════════════════════════════════════════════ */
+.makeanap .mnp-rail-wrap{position:relative;height:52vh;min-height:340px;overflow:hidden;
+  background:#DEDEDB;border-top:1px solid var(--mnp-line)}
+.makeanap .mnp-rail{display:flex;height:100%;width:max-content;animation:mnp-pan 65s linear infinite}
+.makeanap .mnp-rail-wrap:hover .mnp-rail{animation-play-state:paused}
+.makeanap .mnp-rail figure{width:31vw;min-width:280px;height:100%;position:relative;
+  border-right:1px solid rgba(255,255,255,.4)}
+.makeanap .mnp-rail figcaption{position:absolute;left:14px;top:14px;color:var(--mnp-ink);opacity:.6;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+@keyframes mnp-pan{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.makeanap .mnp-rail-over{
+  position:absolute;left:0;right:0;bottom:0;padding:80px 20px 24px;
+  background:linear-gradient(to top, rgba(233,233,231,.97) 34%, rgba(233,233,231,0));
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+}
+.makeanap .mnp-rail-over h2{font-size:clamp(24px,3vw,40px);font-weight:400;letter-spacing:-.032em;
+  line-height:1.06;max-width:18ch}
+.makeanap .mnp-rail-r{font-size:13px;color:var(--mnp-mut);white-space:nowrap;padding-bottom:4px}
+.makeanap .mnp-rail-hint{position:absolute;right:20px;top:16px;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mnp-ink);opacity:.45}
+
+/* ══ 3 · SWATCH / DETAIL ═══════════════════════════════════════════════ */
+.makeanap .mnp-sw{border-top:1px solid var(--mnp-line);border-bottom:1px solid var(--mnp-line)}
+.makeanap .mnp-sw-in{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--mnp-line)}
+.makeanap .mnp-sw-ph{aspect-ratio:1/1;background:#DEDEDB;overflow:hidden;position:relative}
+.makeanap .mnp-sw-ph img{position:absolute;inset:0;opacity:0;z-index:0;transition:opacity .5s ease}
+.makeanap .mnp-sw-ph img.on{opacity:1;z-index:2}
+.makeanap .mnp-sw-ph > .mnp-sw-static{position:relative;height:100%}
+.makeanap .mnp-sw-txt{background:var(--mnp-ground);padding:48px 44px;display:flex;flex-direction:column;justify-content:center}
+.makeanap .mnp-eyebrow{font-size:12px;letter-spacing:.15em;color:var(--mnp-mut);text-transform:uppercase;margin-bottom:20px}
+.makeanap .mnp-sw-txt h2{font-size:38px;font-weight:400;line-height:1.08;letter-spacing:-.028em;max-width:16ch}
+.makeanap .mnp-sw-txt p{margin-top:18px;color:var(--mnp-mut);font-size:16px;line-height:1.45;max-width:42ch}
+.makeanap .mnp-pick{display:flex;align-items:center;gap:16px;margin-top:32px;flex-wrap:wrap}
+.makeanap .mnp-dots{display:flex;gap:10px}
+.makeanap .mnp-dot{width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,0,0,.14);position:relative;
+  transition:transform .18s;background-size:cover;background-position:center}
+.makeanap .mnp-dot::after{content:"";position:absolute;inset:-4px;border:1px solid var(--mnp-ink);border-radius:50%;opacity:0;transition:.18s}
+.makeanap .mnp-dot[aria-pressed="true"]::after{opacity:1}
+.makeanap .mnp-dot:hover{transform:translateY(-2px)}
+.makeanap .mnp-now{font-size:13.5px;color:var(--mnp-mut)}
+.makeanap .mnp-now b{font-weight:400;color:var(--mnp-ink)}
+.makeanap .mnp-link{margin-top:28px;font-size:13.5px;display:inline-flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--mnp-line);width:max-content;padding-bottom:2px}
+.makeanap .mnp-link:hover{border-color:var(--mnp-ink)}
+
+/* ══ 4 · COMPARISON ════════════════════════════════════════════════════ */
+.makeanap .mnp-vs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--mnp-line);
+  border-top:1px solid var(--mnp-line);border-bottom:1px solid var(--mnp-line)}
+.makeanap .mnp-vs-col{background:var(--mnp-ground);padding:52px 44px 56px;display:flex;flex-direction:column}
+.makeanap .mnp-vs-col.dark{background:var(--mnp-ink);color:var(--mnp-ground)}
+.makeanap .mnp-vs-col h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:400;opacity:.6}
+.makeanap .mnp-vs-col .mnp-big{font-size:clamp(22px,2.5vw,32px);font-weight:400;letter-spacing:-.026em;
+  line-height:1.16;margin:20px 0 18px;max-width:19ch;min-height:2.32em}
+.makeanap .mnp-vs-col p{font-size:15.5px;line-height:1.55;opacity:.78;max-width:40ch;margin-bottom:26px}
+.makeanap .mnp-vs-col .mnp-end{margin-top:auto;padding-top:16px;font-size:13.5px;opacity:.6;
+  border-top:1px solid rgba(255,255,255,.18)}
+.makeanap .mnp-vs-col:not(.dark) .mnp-end{border-top-color:var(--mnp-line)}
+
+/* ══ 5 · GRID ══════════════════════════════════════════════════════════ */
+.makeanap .mnp-head{display:flex;align-items:baseline;justify-content:space-between;padding:56px 20px 18px}
+.makeanap .mnp-head h2{font-size:16px;font-weight:400;letter-spacing:.07em;text-transform:uppercase}
+.makeanap .mnp-head a{font-size:13.5px;color:var(--mnp-mut);border-bottom:1px solid var(--mnp-line);padding-bottom:2px}
+.makeanap .mnp-head a:hover{color:var(--mnp-ink);border-color:var(--mnp-ink)}
+.makeanap .mnp-grid{display:grid;gap:1px;background:var(--mnp-line);border-bottom:1px solid var(--mnp-line)}
+.makeanap .mnp-g4{grid-template-columns:repeat(4,1fr)}
+.makeanap .mnp-g2{grid-template-columns:1fr 1fr}
+.makeanap .mnp-cell{background:var(--mnp-ground);min-width:0}
+.makeanap .mnp-cell a{display:block;position:relative}
+.makeanap .mnp-ph{aspect-ratio:3/4;background:#DEDEDB;overflow:hidden}
+.makeanap .mnp-ph.wide{aspect-ratio:4/3}
+.makeanap .mnp-ph img{transition:opacity .25s}
+.makeanap .mnp-cell a:hover img{opacity:.93}
+.makeanap .mnp-cap{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  display:flex;justify-content:space-between;gap:14px;
+  padding:26px 16px 15px;font-size:13.5px;
+}
+.makeanap .mnp-cap span{color:var(--mnp-ink);min-width:0}
+.makeanap .mnp-cap span:last-child{white-space:nowrap}
+
+/* ══ 6 · CLOSE / NEWSLETTER ════════════════════════════════════════════ */
+.makeanap .mnp-close{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:end;
+  padding:78px 20px 74px;border-top:1px solid var(--mnp-line)}
+.makeanap .mnp-close h2{font-size:clamp(26px,3vw,40px);font-weight:400;letter-spacing:-.03em;
+  line-height:1.08;max-width:15ch}
+.makeanap .mnp-close p{margin-top:16px;color:var(--mnp-mut);font-size:15px;max-width:38ch}
+.makeanap .mnp-nform{display:flex;gap:0;border-bottom:1px solid var(--mnp-ink);
+  width:100%;max-width:420px;justify-self:end}
+.makeanap .mnp-nform input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;
+  padding:10px 2px;color:var(--mnp-ink)}
+.makeanap .mnp-nform input::placeholder{color:var(--mnp-mut)}
+.makeanap .mnp-nform input:focus{outline:none}
+.makeanap .mnp-nform button{padding:10px 4px 10px 16px;font-size:13.5px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.makeanap .mnp-nform button:hover{opacity:.6}
+.makeanap .mnp-fine{display:block;margin-top:10px;color:var(--mnp-mut);font-size:12px;grid-column:1/-1}
+
+@media (max-width:900px){
+  .makeanap .mnp-vs{grid-template-columns:1fr}
+  .makeanap .mnp-close{grid-template-columns:1fr;gap:28px}
+  .makeanap .mnp-nform{justify-self:start}
+  .makeanap .mnp-sw-in{grid-template-columns:1fr}
+  .makeanap .mnp-g4{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .makeanap .mnp-hero{flex-direction:column;height:auto}
+  .makeanap .mnp-hero-ph{flex:0 0 52vh;-webkit-mask-image:none;mask-image:none}
+  .makeanap .mnp-hero-txt{padding:32px 20px}
+  .makeanap .mnp-g2{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .makeanap .mnp-rail{animation:none}
+  .makeanap .mnp-word[aria-pressed="true"] .mnp-ln{animation:none;width:100%}
+  .makeanap .mnp-hero-ph img{transition:opacity .2s}
+}
